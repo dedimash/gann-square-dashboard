@@ -22,8 +22,8 @@ const ASSET_CONFIGS = {
     },
     forex: {
         name: 'מטבעות חוץ',
-        scaleFactor: 0.0001,
-        gannDivisor: 5,
+        scaleFactor: 1000, // תוקן - מ-0.0001 ל-1000
+        gannDivisor: 50,   // תוקן - מ-5 ל-50
         weights: {
             gann: 1.2,
             fibonacci: 1.0,
@@ -36,8 +36,8 @@ const ASSET_CONFIGS = {
     },
     crypto: {
         name: 'קריפטו',
-        scaleFactor: 10,
-        gannDivisor: 100,
+        scaleFactor: 1,    // תוקן - מ-10 ל-1
+        gannDivisor: 100,  // נשאר זהה
         weights: {
             gann: 1.1,
             fibonacci: 1.2,
@@ -50,8 +50,8 @@ const ASSET_CONFIGS = {
     },
     commodities: {
         name: 'סחורות',
-        scaleFactor: 0.1,
-        gannDivisor: 10,
+        scaleFactor: 1,    // תוקן - מ-0.1 ל-1
+        gannDivisor: 30,   // תוקן - מ-10 ל-30
         weights: {
             gann: 1.3,
             fibonacci: 1.2,
@@ -65,7 +65,7 @@ const ASSET_CONFIGS = {
     etf: {
         name: 'תעודות סל (ETF)',
         scaleFactor: 1,
-        gannDivisor: 15,
+        gannDivisor: 25,   // תוקן - מ-15 ל-25
         weights: {
             gann: 1.4,
             fibonacci: 1.3,
@@ -79,7 +79,7 @@ const ASSET_CONFIGS = {
     indices: {
         name: 'מדדים',
         scaleFactor: 1,
-        gannDivisor: 25,
+        gannDivisor: 40,   // תוקן - מ-25 ל-40
         weights: {
             gann: 1.5,
             fibonacci: 1.4,
@@ -152,7 +152,8 @@ function calculateGannDates(basePrice, baseDate, timeRange, config) {
     
     gannAngles.forEach(angle => {
         const cycleDays = Math.round(sqrt * angle / config.gannDivisor);
-        if (cycleDays > 0 && cycleDays <= timeRange) {
+        // וידוא שהתוצאה הגיונית - לפחות 7 ימים
+        if (cycleDays >= 7 && cycleDays <= timeRange) {
             const targetDate = addDays(baseDate, cycleDays, config.excludeWeekends);
             dates.push({
                 date: targetDate,
@@ -237,7 +238,7 @@ function calculateGematriaDates(basePrice, baseDate, timeRange, config) {
     
     gematriaCycles.forEach(cycle => {
         const days = (gematriaSum * cycle) % 365;
-        if (days > 0 && days <= timeRange) {
+        if (days >= 7 && days <= timeRange) { // וידוא מינימום 7 ימים
             const targetDate = addDays(baseDate, days, config.excludeWeekends);
             dates.push({
                 date: targetDate,
@@ -514,6 +515,7 @@ function displayTimeline() {
 
 function displayChart() {
     const canvas = document.getElementById('chart-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
     // Clear canvas
@@ -732,24 +734,24 @@ function updateFilterButtons() {
 }
 
 function fillSampleData() {
-    // Set sample date to a historical date for testing
+    // Set sample data - סחורות מתאים למחיר 1850.50 (זהב)
     document.getElementById('base-price').value = '1850.50';
     document.getElementById('base-date').value = '2021-05-25';
     document.getElementById('time-range').value = '180';
     
-    // Choose asset type based on price pattern
-    document.getElementById('asset-type').value = 'forex';
+    // Choose asset type that matches the price - זהב = סחורות
+    document.getElementById('asset-type').value = 'commodities';
     
     // Trigger change event to update settings
     document.getElementById('asset-type').dispatchEvent(new Event('change'));
     
-    alert('נתוני דוגמה הוזנו! לחץ על "חשב תאריכי מפנה" כדי לראות תוצאות.');
+    alert('נתוני דוגמה הוזנו! מחיר זהב $1850.50 מ-25.5.2021. לחץ "חשב תאריכי מפנה".');
 }
 
 function resetSystem() {
     // Clear all inputs
     document.getElementById('base-price').value = '';
-    document.getElementById('base-date').value = '';
+    document.getElementById('base-date').value = '2021-05-25'; // תאריך דוגמה
     document.getElementById('time-range').value = '180';
     document.getElementById('asset-type').value = 'stocks';
     document.getElementById('accuracy-level').value = 'standard';
@@ -854,9 +856,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     drawGannSquare();
     
-    // Set default date to today
-    const today = new Date();
-    document.getElementById('base-date').value = today.toISOString().split('T')[0];
+    // Set default date to sample date for better user experience
+    document.getElementById('base-date').value = '2021-05-25';
     
     // Trigger initial asset type setup
     document.getElementById('asset-type').dispatchEvent(new Event('change'));
