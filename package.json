@@ -1,0 +1,56 @@
+{
+  "name": "gann-square-dashboard",
+  "version": "1.0.0",
+  "description": "מערכת מתקדמת לחיזוי תאריכים משמעותיים במסחר המבוססת על השיטות הקלאסיות של וויליאם גאן",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "live-server --port=8080 --open=/index.html",
+    "test": "echo \"No tests specified\" && exit 0",
+    "build": "echo \"Static site - no build process needed\" && exit 0"
+  },
+  "keywords": [
+    "gann",
+    "trading",
+    "finance",
+    "astrology",
+    "fibonacci",
+    "technical-analysis",
+    "square-of-nine",
+    "market-timing",
+    "hebrew",
+    "responsive",
+    "dashboard"
+  ],
+  "author": {
+    "name": "Gann Dashboard Team",
+    "email": "contact@gann-dashboard.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/gann-square-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/gann-square-dashboard/issues"
+  },
+  "homepage": "https://your-username.github.io/gann-square-dashboard",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie <= 11"
+  ],
+  "files": [
+    "index.html",
+    "styles.css",
+    "script.js",
+    "README.md"
+  ]
+}

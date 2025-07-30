@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gann Square of Nine Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <div class="square-icon"></div>
+                        <div class="logo-text">
+                            <h1>Gann Square of Nine</h1>
+                            <p>מערכת מתקדמת לחיזוי תאריכים משמעותיים</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicators">
+                    <div class="status-item">
+                        <span class="status-dot active"></span>
+                        <span>מערכת פעילה</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="content-grid">
+                <!-- Panel צד שמאל - הגדרות וקלט -->
+                <div class="left-panel">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2>🎯 הגדרות בסיסיות</h2>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="asset-type">סוג נכס:</label>
+                            <select id="asset-type" class="select-input">
+                                <option value="stocks">מניות</option>
+                                <option value="forex">מטבעות חוץ</option>
+                                <option value="crypto">קריפטו</option>
+                                <option value="commodities">סחורות</option>
+                                <option value="etf">תעודות סל (ETF)</option>
+                                <option value="indices">מדדים</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="base-price">מחיר נקודת בסיס:</label>
+                            <input type="number" id="base-price" class="number-input" 
+                                   placeholder="למשל: 1850.50" step="0.01">
+                            <small class="form-help">הזן מחיר Low לשפל או High לשיא</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="base-date">תאריך נקודת בסיס:</label>
+                            <input type="date" id="base-date" class="date-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="time-range">טווח זמן (ימים):</label>
+                            <input type="number" id="time-range" class="number-input" 
+                                   value="180" min="30" max="365">
+                        </div>
+
+                        <div class="section-header">
+                            <h3>🔧 הגדרות נוספות</h3>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="accuracy-level">רמת דיוק:</label>
+                            <select id="accuracy-level" class="select-input">
+                                <option value="standard">רגילה</option>
+                                <option value="high">גבוהה (עם חלונות זמן)</option>
+                            </select>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="exclude-weekends">
+                                <span class="checkmark"></span>
+                                התעלם מסופי שבוע בחישוב
+                            </label>
+                            <small class="form-help">שימושי למניות ומדדים</small>
+                        </div>
+
+                        <div class="button-group">
+                            <button id="sample-data-btn" class="btn btn-secondary">
+                                מלא נתונים לדוגמה
+                            </button>
+                            <button id="calculate-btn" class="btn btn-primary">
+                                חשב תאריכי מפנה
+                            </button>
+                            <button id="reset-btn" class="btn btn-outline">
+                                איפוס מערכת
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- טאבים לשיטות חישוב -->
+                    <div class="section-card">
+                        <div class="tabs-container">
+                            <div class="tabs-header">
+                                <button class="tab-btn active" data-tab="all">כל השיטות</button>
+                                <button class="tab-btn" data-tab="gann">Square of Nine</button>
+                                <button class="tab-btn" data-tab="fibonacci">פיבונאצ'י</button>
+                                <button class="tab-btn" data-tab="astro">אסטרולוגיה</button>
+                                <button class="tab-btn" data-tab="natural">מחזורים</button>
+                                <button class="tab-btn" data-tab="analysis">ניתוח</button>
+                            </div>
+
+                            <div class="tab-content active" id="tab-all">
+                                <h3>🎯 מערכת משולבת</h3>
+                                <p>משלבת את כל השיטות לזיהוי תאריכי מפנה מדויקים.</p>
+                                <div class="method-checkboxes">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="methods" value="gann" checked>
+                                        <span class="checkmark"></span>
+                                        Gann Square of Nine
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="methods" value="fibonacci" checked>
+                                        <span class="checkmark"></span>
+                                        מחזורי פיבונאצ'י
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="methods" value="lunar" checked>
+                                        <span class="checkmark"></span>
+                                        מחזורי ירח
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="methods" value="astro" checked>
+                                        <span class="checkmark"></span>
+                                        אספקטים אסטרולוגיים
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="methods" value="gematria" checked>
+                                        <span class="checkmark"></span>
+                                        גימטריה קבלית
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="methods" value="natural" checked>
+                                        <span class="checkmark"></span>
+                                        מחזורים טבעיים
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-gann">
+                                <h3>📐 Square of Nine</h3>
+                                <p>השיטה הקלאסית של וויליאם גאן המבוססת על זוויות גיאומטריות.</p>
+                                <div class="gann-visualization">
+                                    <canvas id="gann-canvas" width="200" height="200"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-fibonacci">
+                                <h3>🌀 מחזורי פיבונאצ'י</h3>
+                                <p>מחזורי זמן מבוססי הסדרה הפיבונאצ'ית הטבעית.</p>
+                                <div class="fibonacci-sequence">
+                                    <span class="fib-number">8</span>
+                                    <span class="fib-number">13</span>
+                                    <span class="fib-number">21</span>
+                                    <span class="fib-number">34</span>
+                                    <span class="fib-number">55</span>
+                                    <span class="fib-number">89</span>
+                                    <span class="fib-number">144</span>
+                                    <span class="fib-number">233</span>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-astro">
+                                <h3>🌟 אסטרולוגיה פיננסית</h3>
+                                <p>מחזורי ירח ואספקטים פלנטריים המשפיעים על השווקים.</p>
+                                <div class="astro-info">
+                                    <div class="astro-item">🌙 מחזורי ירח (29.53 ימים)</div>
+                                    <div class="astro-item">⭐ אספקטים (0°, 90°, 120°, 180°)</div>
+                                    <div class="astro-item">🌌 זוויות גיאומטריות</div>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-natural">
+                                <h3>🌍 מחזורים טבעיים</h3>
+                                <p>מחזורי טבע, קבלה ומתמטיקה מקודשת.</p>
+                                <div class="natural-cycles">
+                                    <div class="cycle-item">7 ימים - שבוע</div>
+                                    <div class="cycle-item">22 ימים - אותיות</div>
+                                    <div class="cycle-item">32 ימים - נתיבות חכמה</div>
+                                    <div class="cycle-item">72 ימים - שם ע"ב</div>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-analysis">
+                                <h3>📊 ניתוח מתקדם</h3>
+                                <p>סטטיסטיקות והתכנסויות בזמן אמת.</p>
+                                <div id="analysis-content">
+                                    <p class="analysis-placeholder">בצע חישוב כדי לראות ניתוח מפורט</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel צד ימין - תוצאות -->
+                <div class="right-panel">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2>📅 תאריכי מפנה משמעותיים</h2>
+                            <div class="header-actions">
+                                <button id="export-btn" class="btn btn-outline" style="display: none;">
+                                    📥 ייצא לאקסל
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="loading-indicator" class="loading-container" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <p>מחשב תאריכים משמעותיים...</p>
+                        </div>
+
+                        <div id="results-container" style="display: none;">
+                            <div class="results-header">
+                                <div class="sort-options">
+                                    <button id="sort-strength" class="sort-btn active">לפי עוצמה ⬇</button>
+                                    <button id="sort-date" class="sort-btn">לפי תאריך ⬆</button>
+                                </div>
+                                <div class="filter-options">
+                                    <button class="filter-btn active" data-filter="all">הכל</button>
+                                    <button class="filter-btn" data-filter="strong">חזקים</button>
+                                    <button class="filter-btn" data-filter="critical">קריטיים</button>
+                                </div>
+                            </div>
+
+                            <div id="results-stats" class="stats-container"></div>
+                            <div id="results-timeline" class="timeline-container"></div>
+                            <div id="strength-chart" class="chart-container">
+                                <canvas id="chart-canvas" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <div id="empty-state" class="empty-state">
+                            <div class="empty-icon">📊</div>
+                            <h3>מוכן לחישוב</h3>
+                            <p>הזן נתונים בסיסיים ולחץ על "חשב תאריכי מפנה" כדי לראות תוצאות</p>
+                        </div>
+                    </div>
+
+                    <!-- כרטיס מידע -->
+                    <div class="section-card info-card">
+                        <div class="section-header">
+                            <h3>💡 טיפים לשימוש</h3>
+                        </div>
+                        <div class="info-content">
+                            <div class="tip-item">
+                                <strong>תאריכי התכנסות:</strong> כשכמה שיטות מצביעות על אותו תאריך
+                            </div>
+                            <div class="tip-item">
+                                <strong>חלונות זמן:</strong> ±2-3 ימים מהתאריך המחושב
+                            </div>
+                            <div class="tip-item">
+                                <strong>בדיקה היסטורית:</strong> בדוק ביצועים בכל פלטפורמת מסחר
+                            </div>
+                            <div class="tip-item">
+                                <strong>אישור טכני:</strong> השתמש בניתוח טכני לאישור הכיוון
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Gann Square of Nine Dashboard. מערכת מתקדמת לחיזוי תאריכים משמעותיים.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
