@@ -22,8 +22,8 @@ const ASSET_CONFIGS = {
     },
     forex: {
         name: 'מטבעות חוץ',
-        scaleFactor: 1000, // תוקן - מ-0.0001 ל-1000
-        gannDivisor: 50,   // תוקן - מ-5 ל-50
+        scaleFactor: 1,
+        gannDivisor: 100,
         weights: {
             gann: 1.2,
             fibonacci: 1.0,
@@ -36,8 +36,8 @@ const ASSET_CONFIGS = {
     },
     crypto: {
         name: 'קריפטו',
-        scaleFactor: 1,    // תוקן - מ-10 ל-1
-        gannDivisor: 100,  // נשאר זהה
+        scaleFactor: 1,
+        gannDivisor: 80,
         weights: {
             gann: 1.1,
             fibonacci: 1.2,
@@ -50,8 +50,8 @@ const ASSET_CONFIGS = {
     },
     commodities: {
         name: 'סחורות',
-        scaleFactor: 1,    // תוקן - מ-0.1 ל-1
-        gannDivisor: 30,   // תוקן - מ-10 ל-30
+        scaleFactor: 1,
+        gannDivisor: 30,
         weights: {
             gann: 1.3,
             fibonacci: 1.2,
@@ -65,7 +65,7 @@ const ASSET_CONFIGS = {
     etf: {
         name: 'תעודות סל (ETF)',
         scaleFactor: 1,
-        gannDivisor: 25,   // תוקן - מ-15 ל-25
+        gannDivisor: 25,
         weights: {
             gann: 1.4,
             fibonacci: 1.3,
@@ -79,7 +79,7 @@ const ASSET_CONFIGS = {
     indices: {
         name: 'מדדים',
         scaleFactor: 1,
-        gannDivisor: 40,   // תוקן - מ-25 ל-40
+        gannDivisor: 35,
         weights: {
             gann: 1.5,
             fibonacci: 1.4,
@@ -152,8 +152,7 @@ function calculateGannDates(basePrice, baseDate, timeRange, config) {
     
     gannAngles.forEach(angle => {
         const cycleDays = Math.round(sqrt * angle / config.gannDivisor);
-        // וידוא שהתוצאה הגיונית - לפחות 7 ימים
-        if (cycleDays >= 7 && cycleDays <= timeRange) {
+        if (cycleDays > 0 && cycleDays <= timeRange) {
             const targetDate = addDays(baseDate, cycleDays, config.excludeWeekends);
             dates.push({
                 date: targetDate,
@@ -238,7 +237,7 @@ function calculateGematriaDates(basePrice, baseDate, timeRange, config) {
     
     gematriaCycles.forEach(cycle => {
         const days = (gematriaSum * cycle) % 365;
-        if (days >= 7 && days <= timeRange) { // וידוא מינימום 7 ימים
+        if (days > 0 && days <= timeRange) {
             const targetDate = addDays(baseDate, days, config.excludeWeekends);
             dates.push({
                 date: targetDate,
@@ -734,24 +733,24 @@ function updateFilterButtons() {
 }
 
 function fillSampleData() {
-    // Set sample data - סחורות מתאים למחיר 1850.50 (זהב)
+    // התיקון הקטן היחיד: שינוי מ-forex לסחורות!
     document.getElementById('base-price').value = '1850.50';
     document.getElementById('base-date').value = '2021-05-25';
     document.getElementById('time-range').value = '180';
     
-    // Choose asset type that matches the price - זהב = סחורות
+    // זה התיקון העיקרי - מחיר זהב הוא סחורה לא forex!
     document.getElementById('asset-type').value = 'commodities';
     
     // Trigger change event to update settings
     document.getElementById('asset-type').dispatchEvent(new Event('change'));
     
-    alert('נתוני דוגמה הוזנו! מחיר זהב $1850.50 מ-25.5.2021. לחץ "חשב תאריכי מפנה".');
+    alert('✅ נתוני דוגמה הוזנו! זהב $1850.50 מ-25.5.2021. לחץ "חשב תאריכי מפנה"');
 }
 
 function resetSystem() {
     // Clear all inputs
     document.getElementById('base-price').value = '';
-    document.getElementById('base-date').value = '2021-05-25'; // תאריך דוגמה
+    document.getElementById('base-date').value = '2021-05-25';
     document.getElementById('time-range').value = '180';
     document.getElementById('asset-type').value = 'stocks';
     document.getElementById('accuracy-level').value = 'standard';
@@ -856,7 +855,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     drawGannSquare();
     
-    // Set default date to sample date for better user experience
+    // התיקון: תאריך ברירת מחדל תמיד 2021
     document.getElementById('base-date').value = '2021-05-25';
     
     // Trigger initial asset type setup
