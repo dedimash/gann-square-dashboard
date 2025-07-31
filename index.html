@@ -3,286 +3,2052 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gann Square of Nine Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Advanced Gann Trading Calendar - מערכת מתקדמת לחיזוי תאריכי מפנה</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel h2 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .panel h3 {
+            margin: 20px 0 15px 0;
+            color: #f093fb;
+            font-size: 1.3em;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            font-size: 1em;
+            color: #f093fb;
+        }
+
+        .input-group input, .input-group select {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group select option {
+            background: #302b63;
+            color: #fff;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #f093fb;
+            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
+        }
+
+        .square-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        .square-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 35px);
+            grid-template-rows: repeat(15, 35px);
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .cell {
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.15);
+            z-index: 10;
+        }
+
+        .cell.center {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .cell.diagonal {
+            background: rgba(240, 147, 251, 0.3);
+        }
+
+        .cell.cardinal {
+            background: rgba(245, 87, 108, 0.3);
+        }
+
+        .cell.highlighted {
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .timeline-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            transform: scale(1.05);
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .timeline-item.high-power {
+            border-left-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .timeline-item.medium-power {
+            border-left-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .timeline-item.low-power {
+            border-left-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .timeline-date {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 15px;
+            min-width: 150px;
+        }
+
+        .timeline-methods {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-left: 20px;
+        }
+
+        .method-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .method-gann {
+            background: #667eea;
+        }
+
+        .method-fibo {
+            background: #f093fb;
+        }
+
+        .method-astro {
+            background: #f5576c;
+        }
+
+        .method-lunar {
+            background: #4ecdc4;
+        }
+
+        .method-natural {
+            background: #ff6b6b;
+        }
+
+        .power-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: auto;
+        }
+
+        .power-star {
+            color: #ffd700;
+            font-size: 1.2em;
+        }
+
+        .legend {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(240, 147, 251, 0.3);
+        }
+
+        .info-box h4 {
+            color: #f093fb;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .method-settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .method-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #f093fb;
+        }
+
+        .method-card h4 {
+            color: #f093fb;
+            margin-bottom: 10px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(240, 147, 251, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(240, 147, 251, 0.5);
+        }
+
+        .lunar-phases {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .lunar-phase {
+            text-align: center;
+        }
+
+        .lunar-icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .statistics-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #f093fb;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        canvas {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <div class="logo">
-                        <div class="square-icon"></div>
-                        <div class="logo-text">
-                            <h1>Gann Square of Nine</h1>
-                            <p>מערכת מתקדמת לחיזוי תאריכים משמעותיים</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="status-indicators">
-                    <div class="status-item">
-                        <span class="status-dot active"></span>
-                        <span>מערכת פעילה</span>
-                    </div>
-                </div>
-            </div>
-        </header>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 Advanced Gann Trading Calendar</h1>
+            <p>מערכת מתקדמת לחיזוי תאריכי מפנה המשלבת טכניקות מרובות</p>
+        </div>
 
-        <main class="main-content">
-            <div class="content-grid">
-                <!-- Panel צד שמאל - הגדרות וקלט -->
-                <div class="left-panel">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2>🎯 הגדרות בסיסיות</h2>
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('main')">🎯 מערכת ראשית</button>
+            <button class="tab" onclick="showTab('gann')">📐 Square of Nine</button>
+            <button class="tab" onclick="showTab('fibonacci')">🌀 פיבונאצ'י</button>
+            <button class="tab" onclick="showTab('astro')">🌟 אסטרולוגיה</button>
+            <button class="tab" onclick="showTab('cycles')">🔄 מחזורים טבעיים</button>
+            <button class="tab" onclick="showTab('analysis')">📊 ניתוח משולב</button>
+        </div>
+
+        <!-- Main System Tab -->
+        <div id="main" class="tab-content active">
+            <div class="main-grid">
+                <div class="panel">
+                    <h2>הגדרות מערכת</h2>
+                    <div class="input-section">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="mainPrice">מחיר נוכחי (או היסטורי):</label>
+                                <input type="number" id="mainPrice" placeholder="לדוגמה: 1850.50" step="0.01">
+                            </div>
+                            <div class="input-group">
+                                <label for="mainDate">תאריך בסיס:</label>
+                                <input type="date" id="mainDate">
+                            </div>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="assetType">סוג נכס:</label>
+                                <select id="assetType" onchange="updateAssetSettings()">
+                                    <option value="stocks">מניות</option>
+                                    <option value="forex">מט"ח (Forex)</option>
+                                    <option value="crypto">קריפטו</option>
+                                    <option value="commodities">סחורות</option>
+                                    <option value="etf">תעודות סל (ETF)</option>
+                                    <option value="indices">מדדים</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="pivotType">סוג נקודת בסיס:</label>
+                                <select id="pivotType">
+                                    <option value="high">שיא (High)</option>
+                                    <option value="low">שפל (Low)</option>
+                                    <option value="neutral">נייטרלי</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="timeRange">טווח זמן לסריקה:</label>
+                                <select id="timeRange">
+                                    <option value="30">30 ימים</option>
+                                    <option value="60">60 ימים</option>
+                                    <option value="90">90 ימים</option>
+                                    <option value="180">180 ימים</option>
+                                    <option value="365">שנה</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="precision">רמת דיוק:</label>
+                                <select id="precision">
+                                    <option value="normal">רגילה</option>
+                                    <option value="high">גבוהה (חלונות זמן)</option>
+                                    <option value="extreme">מקסימלית</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h3>בחר שיטות חישוב:</h3>
+                        <div class="method-settings">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="useGann" checked>
+                                <label for="useGann">Gann Square of Nine</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="useFibo" checked>
+                                <label for="useFibo">מחזורי פיבונאצ'י</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="useAstro" checked>
+                                <label for="useAstro">אספקטים אסטרולוגיים</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="useLunar" checked>
+                                <label for="useLunar">מחזורי ירח</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="useNatural" checked>
+                                <label for="useNatural">מחזורים טבעיים</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="useGematria" checked>
+                                <label for="useGematria">גימטריה קבלית</label>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="asset-type">סוג נכס:</label>
-                            <select id="asset-type" class="select-input">
-                                <option value="stocks">מניות</option>
-                                <option value="forex">מטבעות חוץ</option>
-                                <option value="crypto">קריפטו</option>
-                                <option value="commodities">סחורות</option>
-                                <option value="etf">תעודות סל (ETF)</option>
-                                <option value="indices">מדדים</option>
+                        <h3 style="margin-top: 20px;">הגדרות נוספות:</h3>
+                        <div class="checkbox-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                            <input type="checkbox" id="excludeWeekends" onchange="updateExcludeWeekends()">
+                            <label for="excludeWeekends">התעלם מסופי שבוע (שבת-ראשון) בחישוב הימים</label>
+                            <div style="font-size: 0.85em; opacity: 0.7; margin-right: 25px; margin-top: 5px;">
+                                מומלץ למניות, תעודות סל ומדדים. לא מומלץ למט"ח וקריפטו.<br>
+                                <span style="opacity: 0.6;">* מחזורי ירח ואסטרולוגיה תמיד מחושבים לפי לוח שנה רגיל</span>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button class="calculate-btn" onclick="calculateAllDates()">
+                                🎯 חשב תאריכי מפנה
+                            </button>
+                            
+                            <button class="calculate-btn" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);" onclick="fillExampleData()">
+                                📋 מלא נתונים לדוגמה
+                            </button>
+                            
+                            <button class="calculate-btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);" onclick="exportResults()">
+                                📥 ייצא תוצאות
+                            </button>
+                            
+                            <button class="calculate-btn" style="background: linear-gradient(135deg, #868e96 0%, #495057 100%);" onclick="resetForm()">
+                                🔄 אפס הכל
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 על המערכת:</h4>
+                        <p>מערכת זו משלבת מספר שיטות מתקדמות לזיהוי תאריכי מפנה פוטנציאליים בשוק. ככל שיותר שיטות מצביעות על אותו תאריך, כך גדל הסיכוי למפנה משמעותי.</p>
+                        <p style="margin-top: 10px;"><strong>💪 טיפ לבדיקה:</strong> הזן תאריך ומחיר מהעבר כדי לבדוק את דיוק המערכת על נתונים היסטוריים!</p>
+                        <p style="margin-top: 10px;"><strong>🎯 רמת דיוק:</strong> בחר "גבוהה" כדי לקבל חלונות זמן של ±2 ימים לתאריכים חשובים</p>
+                        <p style="margin-top: 10px;"><strong>📅 ימי מסחר:</strong> סמן "התעלם מסופי שבוע" למניות ומדדים כדי לספור רק ימי מסחר</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>תאריכי מפנה מזוהים</h2>
+                    <div id="calculationInfo" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 20px; display: none;">
+                        <p style="margin: 0; opacity: 0.9;">
+                            📅 תאריך בסיס: <span id="baseDateDisplay"></span><br>
+                            📊 טווח חישוב: <span id="rangeDisplay"></span> ימים קדימה<br>
+                            🔍 מחפש תאריכים בין: <span id="dateRangeDisplay"></span><br>
+                            🎯 סוג נכס: <span id="assetTypeDisplay"></span>
+                        </p>
+                    </div>
+                    <div class="statistics-panel" id="statistics">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalDates">0</div>
+                            <div class="stat-label">סה"כ תאריכים</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="highPowerDates">0</div>
+                            <div class="stat-label">עוצמה גבוהה</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="convergenceDates">0</div>
+                            <div class="stat-label">התכנסויות</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual strength chart -->
+                    <div id="strengthChart" style="display: none; margin: 20px 0;">
+                        <h3 style="text-align: center; margin-bottom: 15px;">📊 גרף עוצמת תאריכים</h3>
+                        <div style="position: relative; width: 100%; height: 200px;">
+                            <canvas id="dateStrengthChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-container" id="mainTimeline">
+                        <p style="text-align: center; opacity: 0.6;">התוצאות יופיעו כאן לאחר החישוב</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gann Square Tab -->
+        <div id="gann" class="tab-content">
+            <div class="main-grid">
+                <div class="panel">
+                    <h2>Gann Square of Nine</h2>
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="gannPrice">מחיר בסיס:</label>
+                            <input type="number" id="gannPrice" placeholder="מחיר" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="gannAngle">זווית גאן:</label>
+                            <select id="gannAngle">
+                                <option value="45">45° (1x1)</option>
+                                <option value="63.75">63.75° (2x1)</option>
+                                <option value="71.25">71.25° (3x1)</option>
+                                <option value="75">75° (4x1)</option>
+                                <option value="82.5">82.5° (8x1)</option>
+                                <option value="90">90° (אנכי)</option>
+                                <option value="120">120° (משולש)</option>
+                                <option value="180">180° (התנגדות)</option>
+                                <option value="240">240°</option>
+                                <option value="270">270°</option>
+                                <option value="360">360° (מעגל שלם)</option>
                             </select>
                         </div>
+                        <button class="calculate-btn" onclick="calculateGannDates()">חשב לפי Gann</button>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h4>📐 שיטת Gann Square of Nine:</h4>
+                        <p>השיטה מבוססת על ספירלה מתמטית שבה מחיר וזמן נעים בהרמוניה. גאן גילה שתנועות מחיר משמעותיות מתרחשות כאשר המחיר נע בזוויות ספציפיות על הספירלה.</p>
+                    </div>
+                </div>
 
-                        <div class="form-group">
-                            <label for="base-price">מחיר נקודת בסיס:</label>
-                            <input type="number" id="base-price" class="number-input" 
-                                   placeholder="למשל: 1850.50" step="0.01">
-                            <small class="form-help">הזן מחיר Low לשפל או High לשיא</small>
+                <div class="panel">
+                    <h2>Square Visualization</h2>
+                    <div class="square-container">
+                        <div class="square-grid" id="gannSquareGrid"></div>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                            <span>מרכז</span>
                         </div>
-
-                        <div class="form-group">
-                            <label for="base-date">תאריך נקודת בסיס:</label>
-                            <input type="date" id="base-date" class="date-input">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(240, 147, 251, 0.3);"></div>
+                            <span>אלכסונים</span>
                         </div>
-
-                        <div class="form-group">
-                            <label for="time-range">טווח זמן (ימים):</label>
-                            <input type="number" id="time-range" class="number-input" 
-                                   value="180" min="30" max="365">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: rgba(245, 87, 108, 0.3);"></div>
+                            <span>צירים ראשיים</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                        <div class="section-header">
-                            <h3>🔧 הגדרות נוספות</h3>
+        <!-- Fibonacci Tab -->
+        <div id="fibonacci" class="tab-content">
+            <div class="panel">
+                <h2>🌀 מחזורי זמן פיבונאצ'י</h2>
+                <div class="input-section">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="fiboStartDate">תאריך התחלה (שיא/שפל):</label>
+                            <input type="date" id="fiboStartDate">
                         </div>
-
-                        <div class="form-group">
-                            <label for="accuracy-level">רמת דיוק:</label>
-                            <select id="accuracy-level" class="select-input">
-                                <option value="standard">רגילה</option>
-                                <option value="high">גבוהה (עם חלונות זמן)</option>
+                        <div class="input-group">
+                            <label for="fiboType">סוג מחזור:</label>
+                            <select id="fiboType">
+                                <option value="days">ימים</option>
+                                <option value="weeks">שבועות</option>
+                                <option value="months">חודשים</option>
+                                <option value="trading">ימי מסחר</option>
                             </select>
                         </div>
+                    </div>
 
+                    <h3>רצף פיבונאצ'י למעקב:</h3>
+                    <div class="method-settings">
                         <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="exclude-weekends">
-                                <span class="checkmark"></span>
-                                התעלם מסופי שבוע בחישוב
-                            </label>
-                            <small class="form-help">שימושי למניות ומדדים</small>
+                            <input type="checkbox" id="fibo8" checked>
+                            <label for="fibo8">8</label>
                         </div>
-
-                        <div class="button-group">
-                            <button id="sample-data-btn" class="btn btn-secondary">
-                                מלא נתונים לדוגמה
-                            </button>
-                            <button id="calculate-btn" class="btn btn-primary">
-                                חשב תאריכי מפנה
-                            </button>
-                            <button id="reset-btn" class="btn btn-outline">
-                                איפוס מערכת
-                            </button>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo13" checked>
+                            <label for="fibo13">13</label>
                         </div>
-                    </div>
-
-                    <!-- טאבים לשיטות חישוב -->
-                    <div class="section-card">
-                        <div class="tabs-container">
-                            <div class="tabs-header">
-                                <button class="tab-btn active" data-tab="all">כל השיטות</button>
-                                <button class="tab-btn" data-tab="gann">Square of Nine</button>
-                                <button class="tab-btn" data-tab="fibonacci">פיבונאצ'י</button>
-                                <button class="tab-btn" data-tab="astro">אסטרולוגיה</button>
-                                <button class="tab-btn" data-tab="natural">מחזורים</button>
-                                <button class="tab-btn" data-tab="analysis">ניתוח</button>
-                            </div>
-
-                            <div class="tab-content active" id="tab-all">
-                                <h3>🎯 מערכת משולבת</h3>
-                                <p>משלבת את כל השיטות לזיהוי תאריכי מפנה מדויקים.</p>
-                                <div class="method-checkboxes">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="methods" value="gann" checked>
-                                        <span class="checkmark"></span>
-                                        Gann Square of Nine
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="methods" value="fibonacci" checked>
-                                        <span class="checkmark"></span>
-                                        מחזורי פיבונאצ'י
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="methods" value="lunar" checked>
-                                        <span class="checkmark"></span>
-                                        מחזורי ירח
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="methods" value="astro" checked>
-                                        <span class="checkmark"></span>
-                                        אספקטים אסטרולוגיים
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="methods" value="gematria" checked>
-                                        <span class="checkmark"></span>
-                                        גימטריה קבלית
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="methods" value="natural" checked>
-                                        <span class="checkmark"></span>
-                                        מחזורים טבעיים
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="tab-gann">
-                                <h3>📐 Square of Nine</h3>
-                                <p>השיטה הקלאסית של וויליאם גאן המבוססת על זוויות גיאומטריות.</p>
-                                <div class="gann-visualization">
-                                    <canvas id="gann-canvas" width="200" height="200"></canvas>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="tab-fibonacci">
-                                <h3>🌀 מחזורי פיבונאצ'י</h3>
-                                <p>מחזורי זמן מבוססי הסדרה הפיבונאצ'ית הטבעית.</p>
-                                <div class="fibonacci-sequence">
-                                    <span class="fib-number">8</span>
-                                    <span class="fib-number">13</span>
-                                    <span class="fib-number">21</span>
-                                    <span class="fib-number">34</span>
-                                    <span class="fib-number">55</span>
-                                    <span class="fib-number">89</span>
-                                    <span class="fib-number">144</span>
-                                    <span class="fib-number">233</span>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="tab-astro">
-                                <h3>🌟 אסטרולוגיה פיננסית</h3>
-                                <p>מחזורי ירח ואספקטים פלנטריים המשפיעים על השווקים.</p>
-                                <div class="astro-info">
-                                    <div class="astro-item">🌙 מחזורי ירח (29.53 ימים)</div>
-                                    <div class="astro-item">⭐ אספקטים (0°, 90°, 120°, 180°)</div>
-                                    <div class="astro-item">🌌 זוויות גיאומטריות</div>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="tab-natural">
-                                <h3>🌍 מחזורים טבעיים</h3>
-                                <p>מחזורי טבע, קבלה ומתמטיקה מקודשת.</p>
-                                <div class="natural-cycles">
-                                    <div class="cycle-item">7 ימים - שבוע</div>
-                                    <div class="cycle-item">22 ימים - אותיות</div>
-                                    <div class="cycle-item">32 ימים - נתיבות חכמה</div>
-                                    <div class="cycle-item">72 ימים - שם ע"ב</div>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="tab-analysis">
-                                <h3>📊 ניתוח מתקדם</h3>
-                                <p>סטטיסטיקות והתכנסויות בזמן אמת.</p>
-                                <div id="analysis-content">
-                                    <p class="analysis-placeholder">בצע חישוב כדי לראות ניתוח מפורט</p>
-                                </div>
-                            </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo21" checked>
+                            <label for="fibo21">21</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo34" checked>
+                            <label for="fibo34">34</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo55" checked>
+                            <label for="fibo55">55</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo89" checked>
+                            <label for="fibo89">89</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo144" checked>
+                            <label for="fibo144">144</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fibo233">
+                            <label for="fibo233">233</label>
                         </div>
                     </div>
+
+                    <button class="calculate-btn" onclick="calculateFibonacciDates()">חשב מחזורי פיבונאצ'י</button>
                 </div>
 
-                <!-- Panel צד ימין - תוצאות -->
-                <div class="right-panel">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2>📅 תאריכי מפנה משמעותיים</h2>
-                            <div class="header-actions">
-                                <button id="export-btn" class="btn btn-outline" style="display: none;">
-                                    📥 ייצא לאקסל
-                                </button>
-                            </div>
+                <div class="info-box">
+                    <h4>🌀 על מחזורי פיבונאצ'י:</h4>
+                    <p>רצף פיבונאצ'י מופיע בטבע ובשווקים הפיננסיים. תאריכים המרוחקים ממספרי פיבונאצ'י מנקודת שיא או שפל נוטים להיות משמעותיים למפנה.</p>
+                </div>
+
+                <div class="timeline-container" id="fiboTimeline"></div>
+            </div>
+        </div>
+
+        <!-- Astrology Tab -->
+        <div id="astro" class="tab-content">
+            <div class="panel">
+                <h2>🌟 אספקטים אסטרולוגיים ומחזורי ירח</h2>
+                <div class="input-section">
+                    <h3>מחזורי ירח:</h3>
+                    <div class="lunar-phases">
+                        <div class="lunar-phase">
+                            <div class="lunar-icon">🌑</div>
+                            <div>ירח חדש</div>
                         </div>
-
-                        <div id="loading-indicator" class="loading-container" style="display: none;">
-                            <div class="loading-spinner"></div>
-                            <p>מחשב תאריכים משמעותיים...</p>
+                        <div class="lunar-phase">
+                            <div class="lunar-icon">🌓</div>
+                            <div>רבע ראשון</div>
                         </div>
-
-                        <div id="results-container" style="display: none;">
-                            <div class="results-header">
-                                <div class="sort-options">
-                                    <button id="sort-strength" class="sort-btn active">לפי עוצמה ⬇</button>
-                                    <button id="sort-date" class="sort-btn">לפי תאריך ⬆</button>
-                                </div>
-                                <div class="filter-options">
-                                    <button class="filter-btn active" data-filter="all">הכל</button>
-                                    <button class="filter-btn" data-filter="strong">חזקים</button>
-                                    <button class="filter-btn" data-filter="critical">קריטיים</button>
-                                </div>
-                            </div>
-
-                            <div id="results-stats" class="stats-container"></div>
-                            <div id="results-timeline" class="timeline-container"></div>
-                            <div id="strength-chart" class="chart-container">
-                                <canvas id="chart-canvas" width="400" height="200"></canvas>
-                            </div>
+                        <div class="lunar-phase">
+                            <div class="lunar-icon">🌕</div>
+                            <div>ירח מלא</div>
                         </div>
-
-                        <div id="empty-state" class="empty-state">
-                            <div class="empty-icon">📊</div>
-                            <h3>מוכן לחישוב</h3>
-                            <p>הזן נתונים בסיסיים ולחץ על "חשב תאריכי מפנה" כדי לראות תוצאות</p>
+                        <div class="lunar-phase">
+                            <div class="lunar-icon">🌗</div>
+                            <div>רבע אחרון</div>
                         </div>
                     </div>
 
-                    <!-- כרטיס מידע -->
-                    <div class="section-card info-card">
-                        <div class="section-header">
-                            <h3>💡 טיפים לשימוש</h3>
+                    <h3>אספקטים פלנטריים:</h3>
+                    <div class="method-settings">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="astroConjunction" checked>
+                            <label for="astroConjunction">Conjunction (0°)</label>
                         </div>
-                        <div class="info-content">
-                            <div class="tip-item">
-                                <strong>תאריכי התכנסות:</strong> כשכמה שיטות מצביעות על אותו תאריך
-                            </div>
-                            <div class="tip-item">
-                                <strong>חלונות זמן:</strong> ±2-3 ימים מהתאריך המחושב
-                            </div>
-                            <div class="tip-item">
-                                <strong>בדיקה היסטורית:</strong> בדוק ביצועים בכל פלטפורמת מסחר
-                            </div>
-                            <div class="tip-item">
-                                <strong>אישור טכני:</strong> השתמש בניתוח טכני לאישור הכיוון
-                            </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="astroSquare" checked>
+                            <label for="astroSquare">Square (90°)</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="astroTrine" checked>
+                            <label for="astroTrine">Trine (120°)</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="astroOpposition" checked>
+                            <label for="astroOpposition">Opposition (180°)</label>
                         </div>
                     </div>
+
+                    <button class="calculate-btn" onclick="calculateAstroDates()">חשב תאריכים אסטרולוגיים</button>
+                </div>
+
+                <div class="info-box">
+                    <h4>🌙 חשיבות אסטרולוגית:</h4>
+                    <p>גאן האמין שלמחזורי הירח ולאספקטים פלנטריים יש השפעה על השווקים. ירח מלא וירח חדש מסמנים לעתים קרובות נקודות מפנה.</p>
+                </div>
+
+                <div class="timeline-container" id="astroTimeline"></div>
+            </div>
+        </div>
+
+        <!-- Natural Cycles Tab -->
+        <div id="cycles" class="tab-content">
+            <div class="panel">
+                <h2>🔄 מחזורים טבעיים ומתמטיים</h2>
+                <div class="input-section">
+                    <h3>מחזורי זמן טבעיים:</h3>
+                    <div class="method-settings">
+                        <div class="method-card">
+                            <h4>מחזורי שנה</h4>
+                            <p>365.25 ימים - סיבוב כדור הארץ</p>
+                        </div>
+                        <div class="method-card">
+                            <h4>מחזורי עונות</h4>
+                            <p>91.3 ימים - רבעון שנה</p>
+                        </div>
+                        <div class="method-card">
+                            <h4>מחזור סינודי</h4>
+                            <p>29.53 ימים - מחזור ירח מלא</p>
+                        </div>
+                        <div class="method-card">
+                            <h4>מחזור שמיטה</h4>
+                            <p>7 שנים - מחזור קבלי</p>
+                        </div>
+                        <div class="method-card">
+                            <h4>מחזור יובל</h4>
+                            <p>49 שנים (7×7)</p>
+                        </div>
+                        <div class="method-card">
+                            <h4>Square of 144</h4>
+                            <p>144 ימים/שבועות - ריבוע גאן</p>
+                        </div>
+                    </div>
+
+                    <h3>גימטריה קבלית:</h3>
+                    <div class="input-group">
+                        <label for="gematriaNumber">מספר לחישוב גימטריה:</label>
+                        <input type="number" id="gematriaNumber" placeholder="לדוגמה: 1850">
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateNaturalCycles()">חשב מחזורים טבעיים</button>
+                </div>
+
+                <div class="info-box">
+                    <h4>🌍 מחזורים בטבע ובשוק:</h4>
+                    <p>מחזורים טבעיים כמו סיבוב כדור הארץ, מחזורי ירח ומספרים קבליים משפיעים על השווקים. גימטריה יכולה לחשוף קשרים נסתרים בין מספרים ותאריכים.</p>
+                </div>
+
+                <div class="timeline-container" id="cyclesTimeline"></div>
+            </div>
+        </div>
+
+        <!-- Combined Analysis Tab -->
+        <div id="analysis" class="tab-content">
+            <div class="panel">
+                <h2>📊 ניתוח משולב ודוח מסכם</h2>
+                <div id="analysisContent">
+                    <p style="text-align: center; opacity: 0.6;">בצע חישוב במערכת הראשית כדי לראות ניתוח משולב</p>
                 </div>
             </div>
-        </main>
-
-        <footer class="footer">
-            <div class="footer-content">
-                <p>&copy; 2025 Gann Square of Nine Dashboard. מערכת מתקדמת לחיזוי תאריכים משמעותיים.</p>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Global variables
+        let allCalculatedDates = [];
+        let consolidatedResults = [];
+        let currentTab = 'main';
+        let currentSort = 'power';
+        let excludeWeekends = false;
+        
+        // Asset type configurations
+        const assetConfigs = {
+            stocks: {
+                name: 'מניות',
+                scaleFactor: 1,
+                gannDivisor: 30,
+                weights: {
+                    gann: 1.5,
+                    fibo: 1.5,
+                    astro: 1,
+                    lunar: 0.8,
+                    natural: 1,
+                    gematria: 0.7
+                }
+            },
+            forex: {
+                name: 'מט"ח',
+                scaleFactor: 1000,
+                gannDivisor: 50,
+                weights: {
+                    gann: 1,
+                    fibo: 1.2,
+                    astro: 1.5,
+                    lunar: 1.5,
+                    natural: 1,
+                    gematria: 0.5
+                }
+            },
+            crypto: {
+                name: 'קריפטו',
+                scaleFactor: 1,
+                gannDivisor: 100,
+                weights: {
+                    gann: 1,
+                    fibo: 1.3,
+                    astro: 0.8,
+                    lunar: 1,
+                    natural: 2,
+                    gematria: 1
+                }
+            },
+            commodities: {
+                name: 'סחורות',
+                scaleFactor: 1,
+                gannDivisor: 30,
+                weights: {
+                    gann: 1.3,
+                    fibo: 1.2,
+                    astro: 1,
+                    lunar: 1,
+                    natural: 1.5,
+                    gematria: 0.5
+                }
+            },
+            etf: {
+                name: 'תעודות סל',
+                scaleFactor: 1,
+                gannDivisor: 15,
+                weights: {
+                    gann: 1.4,
+                    fibo: 1.4,
+                    astro: 0.9,
+                    lunar: 0.8,
+                    natural: 1.2,
+                    gematria: 0.6
+                }
+            },
+            indices: {
+                name: 'מדדים',
+                scaleFactor: 1,
+                gannDivisor: 25,
+                weights: {
+                    gann: 1.5,
+                    fibo: 1.3,
+                    astro: 1,
+                    lunar: 0.9,
+                    natural: 1.1,
+                    gematria: 0.7
+                }
+            }
+        };
+        
+        // Initialize system
+        function initializeSystem() {
+            // Set default date to sample date for better demonstration
+            document.getElementById('mainDate').value = '2021-05-25';
+            document.getElementById('fiboStartDate').value = '2021-05-25';
+            
+            console.log('🚀 Advanced Gann Trading Calendar initialized successfully!');
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', initializeSystem);
+        
+        // Update asset settings
+        function updateAssetSettings() {
+            const assetType = document.getElementById('assetType').value;
+            const config = assetConfigs[assetType];
+            
+            // Auto-check exclude weekends for relevant asset types
+            const shouldExcludeWeekends = ['stocks', 'etf', 'indices'].includes(assetType);
+            document.getElementById('excludeWeekends').checked = shouldExcludeWeekends;
+            excludeWeekends = shouldExcludeWeekends;
+            
+            showNotification(`הגדרות עודכנו ל${config.name}${shouldExcludeWeekends ? ' (סופי שבוע לא יחושבו)' : ''}`, 'success');
+        }
+        
+        function updateExcludeWeekends() {
+            excludeWeekends = document.getElementById('excludeWeekends').checked;
+            
+            showNotification(excludeWeekends ? 
+                'מעתה החישובים יתעלמו מסופי שבוע' : 
+                'החישובים יכללו את כל ימי השבוע', 'info');
+        }
+        
+        function addTradingDays(startDate, daysToAdd) {
+            const result = new Date(startDate);
+            let addedDays = 0;
+            
+            while (addedDays < daysToAdd) {
+                result.setDate(result.getDate() + 1);
+                const dayOfWeek = result.getDay();
+                
+                if (!excludeWeekends || (dayOfWeek !== 0 && dayOfWeek !== 6)) {
+                    addedDays++;
+                }
+            }
+            
+            return result;
+        }
+        
+        function calculateDaysBetween(startDate, endDate) {
+            if (!excludeWeekends) {
+                return Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
+            }
+            
+            let count = 0;
+            const current = new Date(startDate);
+            
+            while (current < endDate) {
+                current.setDate(current.getDate() + 1);
+                const dayOfWeek = current.getDay();
+                
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    count++;
+                }
+            }
+            
+            return count;
+        }
+
+        // Tab navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            currentTab = tabName;
+            
+            if (tabName === 'gann') {
+                initializeGannSquare();
+            }
+        }
+
+        function initializeGannSquare() {
+            const grid = document.getElementById('gannSquareGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            const size = 15;
+            const center = Math.floor(size / 2);
+            const spiral = createSpiral(size);
+            
+            for (let i = 0; i < size * size; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.textContent = spiral[i];
+                
+                const row = Math.floor(i / size);
+                const col = i % size;
+                
+                if (row === center && col === center) {
+                    cell.classList.add('center');
+                } else if (row === col || row + col === size - 1) {
+                    cell.classList.add('diagonal');
+                } else if (row === center || col === center) {
+                    cell.classList.add('cardinal');
+                }
+                
+                cell.addEventListener('click', () => highlightNumber(spiral[i]));
+                grid.appendChild(cell);
+            }
+        }
+
+        function createSpiral(size) {
+            const spiral = new Array(size * size);
+            let num = 1;
+            let row = Math.floor(size / 2);
+            let col = Math.floor(size / 2);
+            spiral[row * size + col] = num++;
+            
+            let steps = 1;
+            let direction = 0;
+            
+            while (num <= size * size) {
+                for (let i = 0; i < 2; i++) {
+                    for (let j = 0; j < steps; j++) {
+                        switch (direction) {
+                            case 0: col++; break;
+                            case 1: row++; break;
+                            case 2: col--; break;
+                            case 3: row--; break;
+                        }
+                        
+                        if (row >= 0 && row < size && col >= 0 && col < size) {
+                            spiral[row * size + col] = num++;
+                        }
+                    }
+                    direction = (direction + 1) % 4;
+                }
+                steps++;
+            }
+            
+            return spiral;
+        }
+
+        function highlightNumber(num) {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.classList.remove('highlighted');
+                if (parseInt(cell.textContent) === num) {
+                    cell.classList.add('highlighted');
+                }
+            });
+        }
+
+        // Main calculation function
+        function calculateAllDates() {
+            const price = parseFloat(document.getElementById('mainPrice').value);
+            const startDate = new Date(document.getElementById('mainDate').value);
+            const timeRange = parseInt(document.getElementById('timeRange').value);
+            
+            if (!price || !startDate) {
+                showNotification('נא להזין מחיר ותאריך', 'error');
+                return;
+            }
+            
+            document.getElementById('mainTimeline').innerHTML = 
+                `<p style="text-align: center; opacity: 0.8;">⏳ מחשב תאריכים החל מ-${startDate.toLocaleDateString('he-IL')}...</p>`;
+            
+            updateCalculationInfo(startDate, timeRange);
+            
+            allCalculatedDates = [];
+            
+            if (document.getElementById('useGann').checked) {
+                allCalculatedDates.push(...calculateGannMethod(price, startDate, timeRange));
+            }
+            
+            if (document.getElementById('useFibo').checked) {
+                allCalculatedDates.push(...calculateFiboMethod(startDate, timeRange));
+            }
+            
+            if (document.getElementById('useAstro').checked) {
+                allCalculatedDates.push(...calculateAstroMethod(startDate, timeRange));
+            }
+            
+            if (document.getElementById('useLunar').checked) {
+                allCalculatedDates.push(...calculateLunarMethod(startDate, timeRange));
+            }
+            
+            if (document.getElementById('useNatural').checked) {
+                allCalculatedDates.push(...calculateNaturalMethod(startDate, timeRange));
+            }
+            
+            if (document.getElementById('useGematria').checked) {
+                allCalculatedDates.push(...calculateGematriaMethod(price, startDate, timeRange));
+            }
+            
+            setTimeout(() => {
+                processAndDisplayResults();
+            }, 100);
+        }
+
+        function updateCalculationInfo(startDate, timeRange) {
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + timeRange);
+            const assetType = document.getElementById('assetType').value;
+            const assetName = assetConfigs[assetType].name;
+            
+            document.getElementById('calculationInfo').style.display = 'block';
+            document.getElementById('baseDateDisplay').textContent = startDate.toLocaleDateString('he-IL');
+            document.getElementById('rangeDisplay').textContent = timeRange;
+            document.getElementById('dateRangeDisplay').textContent = 
+                `${startDate.toLocaleDateString('he-IL')} - ${endDate.toLocaleDateString('he-IL')}`;
+            document.getElementById('assetTypeDisplay').textContent = assetName + 
+                (excludeWeekends ? ' (ללא סופי שבוע)' : '');
+        }
+
+        // Calculation methods
+        function calculateGannMethod(price, startDate, timeRange) {
+            const results = [];
+            const sqrtPrice = Math.sqrt(price);
+            
+            const assetType = document.getElementById('assetType').value;
+            const config = assetConfigs[assetType];
+            
+            const gannDays = [7, 14, 21, 28, 30, 45, 49, 60, 72, 90, 108, 120, 144, 180, 216, 240, 270, 360];
+            
+            gannDays.forEach(days => {
+                if (days <= timeRange) {
+                    const targetDate = excludeWeekends ? 
+                        addTradingDays(startDate, days) :
+                        new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000);
+                    
+                    results.push({
+                        date: targetDate,
+                        method: 'gann',
+                        details: `Gann ${days}d`,
+                        power: days === 45 || days === 90 || days === 180 || days === 360 ? 3 : 2
+                    });
+                }
+            });
+            
+            for (let cycle = 1; cycle <= 8; cycle++) {
+                const degreesToAdd = cycle * 45;
+                const factor = degreesToAdd / 360;
+                const newSqrt = sqrtPrice + (sqrtPrice * factor * 0.1);
+                const newPrice = newSqrt * newSqrt;
+                const priceDiff = Math.abs(newPrice - price);
+                
+                let dayOffset = Math.round(priceDiff / config.gannDivisor);
+                
+                if (dayOffset > 0 && dayOffset <= timeRange) {
+                    const targetDate = excludeWeekends ?
+                        addTradingDays(startDate, dayOffset) :
+                        new Date(startDate.getTime() + dayOffset * 24 * 60 * 60 * 1000);
+                    
+                    results.push({
+                        date: targetDate,
+                        method: 'gann',
+                        details: `Gann ${degreesToAdd}°`,
+                        power: degreesToAdd % 90 === 0 ? 3 : 2
+                    });
+                }
+            }
+            
+            return results;
+        }
+
+        function calculateFiboMethod(startDate, timeRange) {
+            const results = [];
+            const fiboNumbers = [3, 5, 8, 13, 21, 34, 55, 89, 144, 233];
+            
+            fiboNumbers.forEach(num => {
+                if (num <= timeRange) {
+                    const targetDate = excludeWeekends ?
+                        addTradingDays(startDate, num) :
+                        new Date(startDate.getTime() + num * 24 * 60 * 60 * 1000);
+                    
+                    results.push({
+                        date: targetDate,
+                        method: 'fibo',
+                        details: `Fibonacci ${num}`,
+                        power: num === 21 || num === 55 || num === 89 ? 3 : 2
+                    });
+                }
+            });
+            
+            return results;
+        }
+
+        function calculateAstroMethod(startDate, timeRange) {
+            const results = [];
+            
+            const aspects = [
+                { name: 'Week', days: 7, power: 1 },
+                { name: 'Fortnight', days: 14, power: 1 },
+                { name: 'Lunar Return', days: 27, power: 2 },
+                { name: 'Solar Month', days: 30, power: 2 },
+                { name: 'Mercury', days: 45, power: 2 },
+                { name: 'Sextile', days: 60, power: 2 },
+                { name: 'Season', days: 84, power: 2 },
+                { name: 'Square', days: 90, power: 3 },
+                { name: 'Trine', days: 120, power: 3 },
+                { name: 'Opposition', days: 180, power: 3 },
+                { name: 'Venus', days: 225, power: 2 },
+                { name: 'Mars Square', days: 270, power: 3 }
+            ];
+            
+            aspects.forEach(aspect => {
+                if (aspect.days <= timeRange) {
+                    const targetDate = new Date(startDate.getTime() + aspect.days * 24 * 60 * 60 * 1000);
+                    
+                    results.push({
+                        date: targetDate,
+                        method: 'astro',
+                        details: aspect.name,
+                        power: aspect.power
+                    });
+                }
+            });
+            
+            return results;
+        }
+
+        function calculateLunarMethod(startDate, timeRange) {
+            const results = [];
+            const lunarCycle = 29.53;
+            const phases = [
+                { name: 'ירח חדש', offset: 0, power: 3 },
+                { name: 'רבע ראשון', offset: 7.38, power: 2 },
+                { name: 'ירח מלא', offset: 14.77, power: 3 },
+                { name: 'רבע אחרון', offset: 22.15, power: 2 }
+            ];
+            
+            for (let cycle = 0; cycle <= Math.floor(timeRange / lunarCycle); cycle++) {
+                phases.forEach(phase => {
+                    const dayOffset = Math.round(cycle * lunarCycle + phase.offset);
+                    if (dayOffset > 0 && dayOffset <= timeRange) {
+                        const targetDate = new Date(startDate.getTime() + dayOffset * 24 * 60 * 60 * 1000);
+                        
+                        results.push({
+                            date: targetDate,
+                            method: 'lunar',
+                            details: `${phase.name}`,
+                            power: phase.power
+                        });
+                    }
+                });
+            }
+            
+            return results;
+        }
+
+        function calculateNaturalMethod(startDate, timeRange) {
+            const results = [];
+            const cycles = [
+                { days: 7, name: 'שבוע', power: 1 },
+                { days: 14, name: '2 שבועות', power: 1 },
+                { days: 21, name: '3 שבועות', power: 2 },
+                { days: 30, name: 'חודש', power: 2 },
+                { days: 45, name: '1.5 חודש', power: 2 },
+                { days: 60, name: '2 חודשים', power: 2 },
+                { days: 91, name: 'עונה', power: 3 },
+                { days: 144, name: 'Square 144', power: 3 }
+            ];
+            
+            cycles.forEach(cycle => {
+                if (cycle.days <= timeRange) {
+                    const targetDate = excludeWeekends ?
+                        addTradingDays(startDate, cycle.days) :
+                        new Date(startDate.getTime() + cycle.days * 24 * 60 * 60 * 1000);
+                    
+                    results.push({
+                        date: targetDate,
+                        method: 'natural',
+                        details: cycle.name,
+                        power: cycle.power
+                    });
+                }
+            });
+            
+            return results;
+        }
+
+        function calculateGematriaMethod(price, startDate, timeRange) {
+            const results = [];
+            
+            const priceInt = Math.floor(price);
+            const digitSum = priceInt.toString().split('').reduce((a, b) => a + parseInt(b), 0);
+            
+            const kabbalisticNumbers = [
+                { num: 3, name: 'משולש', power: 1 },
+                { num: 7, name: 'שבע', power: 2 },
+                { num: 10, name: 'עשר ספירות', power: 2 },
+                { num: 12, name: '12 שבטים', power: 2 },
+                { num: 22, name: 'אותיות', power: 3 },
+                { num: 32, name: 'נתיבות חכמה', power: 3 },
+                { num: 40, name: 'ארבעים', power: 2 },
+                { num: 49, name: '7×7', power: 3 },
+                { num: 72, name: 'שם ע"ב', power: 3 }
+            ];
+            
+            kabbalisticNumbers.forEach(kab => {
+                if (kab.num <= timeRange) {
+                    const targetDate = excludeWeekends ?
+                        addTradingDays(startDate, kab.num) :
+                        new Date(startDate.getTime() + kab.num * 24 * 60 * 60 * 1000);
+                    
+                    results.push({
+                        date: targetDate,
+                        method: 'natural',
+                        details: `קבלה: ${kab.name}`,
+                        power: kab.power
+                    });
+                }
+            });
+            
+            return results;
+        }
+
+        function processAndDisplayResults() {
+            if (allCalculatedDates.length === 0) {
+                document.getElementById('mainTimeline').innerHTML = 
+                    '<p style="text-align: center; opacity: 0.6;">לא נמצאו תאריכים. נסה להגדיל את טווח הזמן או לשנות את הפרמטרים.</p>';
+                updateStatistics([]);
+                return;
+            }
+            
+            const baseDate = new Date(document.getElementById('mainDate').value);
+            
+            allCalculatedDates.sort((a, b) => a.date - b.date);
+            
+            const dateMap = new Map();
+            allCalculatedDates.forEach(item => {
+                const dateKey = item.date.toDateString();
+                if (!dateMap.has(dateKey)) {
+                    dateMap.set(dateKey, {
+                        date: item.date,
+                        methods: [],
+                        totalPower: 0
+                    });
+                }
+                const entry = dateMap.get(dateKey);
+                entry.methods.push({ method: item.method, details: item.details });
+                entry.totalPower += item.power;
+            });
+            
+            const consolidatedDates = Array.from(dateMap.values()).sort((a, b) => {
+                if (b.totalPower !== a.totalPower) return b.totalPower - a.totalPower;
+                return a.date - b.date;
+            });
+            
+            consolidatedResults = consolidatedDates;
+            
+            updateStatistics(consolidatedDates);
+            displayTimeline(consolidatedDates, baseDate);
+            updateAnalysis(consolidatedDates);
+        }
+
+        function updateStatistics(dates) {
+            const baseDate = new Date(document.getElementById('mainDate').value);
+            baseDate.setHours(0, 0, 0, 0);
+            
+            const futureDates = dates.filter(d => d.date > baseDate);
+            
+            document.getElementById('totalDates').textContent = futureDates.length;
+            document.getElementById('highPowerDates').textContent = futureDates.filter(d => d.totalPower >= 5).length;
+            document.getElementById('convergenceDates').textContent = futureDates.filter(d => d.methods.length >= 3).length;
+        }
+
+        function displayTimeline(dates, baseDate = null) {
+            const timeline = document.getElementById('mainTimeline');
+            timeline.innerHTML = '';
+            
+            if (dates.length === 0) {
+                timeline.innerHTML = '<p style="text-align: center; opacity: 0.6;">לא נמצאו תאריכים בטווח הנבחר</p>';
+                return;
+            }
+            
+            const referenceDate = baseDate || new Date(document.getElementById('mainDate').value);
+            referenceDate.setHours(0, 0, 0, 0);
+            
+            const futureDates = dates.filter(d => d.date > referenceDate);
+            
+            if (futureDates.length === 0) {
+                timeline.innerHTML = `<p style="text-align: center; opacity: 0.6;">לא נמצאו תאריכים אחרי ${referenceDate.toLocaleDateString('he-IL')}</p>`;
+                return;
+            }
+            
+            createStrengthChart(futureDates.slice(0, 20));
+            
+            timeline.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    ${futureDates.length > 10 ? `
+                    <div style="margin-bottom: 10px;">
+                        <button onclick="filterTimelineByPower(0)" style="padding: 8px 16px; margin: 0 5px; border: none; border-radius: 20px; background: rgba(255,255,255,0.2); color: white; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">הכל (${futureDates.length})</button>
+                        <button onclick="filterTimelineByPower(5)" style="padding: 8px 16px; margin: 0 5px; border: none; border-radius: 20px; background: rgba(255,255,255,0.2); color: white; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">חזקים (${futureDates.filter(d => d.totalPower >= 5).length})</button>
+                        <button onclick="filterTimelineByPower(7)" style="padding: 8px 16px; margin: 0 5px; border: none; border-radius: 20px; background: rgba(255,255,255,0.2); color: white; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">קריטיים (${futureDates.filter(d => d.totalPower >= 7).length})</button>
+                    </div>
+                    ` : ''}
+                    <div>
+                        <span style="margin-left: 10px; opacity: 0.8;">מיון:</span>
+                        <button id="sortPowerBtn" onclick="sortTimeline('power')" style="padding: 6px 14px; margin: 0 5px; border: none; border-radius: 15px; background: rgba(240, 147, 251, 0.6); color: white; cursor: pointer; transition: all 0.3s;">לפי עוצמה ⬇</button>
+                        <button id="sortDateBtn" onclick="sortTimeline('date')" style="padding: 6px 14px; margin: 0 5px; border: none; border-radius: 15px; background: rgba(78, 205, 196, 0.3); color: white; cursor: pointer; transition: all 0.3s;">לפי תאריך ⬆</button>
+                    </div>
+                </div>
+                <div id="timelineItems"></div>
+            `;
+            
+            const timelineItems = document.getElementById('timelineItems') || timeline;
+            
+            window.currentTimelineDates = futureDates;
+            
+            futureDates.slice(0, 30).forEach((item, index) => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                if (item.totalPower >= 7) {
+                    timelineItem.classList.add('high-power');
+                } else if (item.totalPower >= 5) {
+                    timelineItem.classList.add('medium-power');
+                } else {
+                    timelineItem.classList.add('low-power');
+                }
+                
+                const dateStr = item.date.toLocaleDateString('he-IL', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const daysFromReference = excludeWeekends ?
+                    calculateDaysBetween(referenceDate, item.date) :
+                    Math.round((item.date - referenceDate) / (1000 * 60 * 60 * 24));
+                
+                const precisionElement = document.getElementById('precision');
+                const precision = precisionElement ? precisionElement.value : 'normal';
+                let timeWindowStr = '';
+                if (precision === 'high' && item.totalPower >= 5) {
+                    const windowStart = new Date(item.date);
+                    const windowEnd = new Date(item.date);
+                    windowStart.setDate(windowStart.getDate() - 2);
+                    windowEnd.setDate(windowEnd.getDate() + 2);
+                    timeWindowStr = `<div style="font-size: 0.85em; opacity: 0.8; margin-top: 5px;">
+                        חלון זמן: ${windowStart.toLocaleDateString('he-IL', {day: 'numeric', month: 'numeric'})} - ${windowEnd.toLocaleDateString('he-IL', {day: 'numeric', month: 'numeric'})}
+                    </div>`;
+                }
+                
+                const methodBadges = item.methods.map(m => {
+                    const badgeClass = `method-badge method-${m.method}`;
+                    return `<span class="${badgeClass}">${m.details}</span>`;
+                }).join('');
+                
+                const stars = '⭐'.repeat(Math.min(Math.floor(item.totalPower / 2), 5));
+                
+                const powerBar = `<div style="background: rgba(255,255,255,0.1); border-radius: 5px; height: 8px; margin-top: 10px; overflow: hidden;">
+                    <div style="background: linear-gradient(to right, #4ecdc4, #f093fb); height: 100%; width: ${Math.min(item.totalPower * 10, 100)}%; transition: width 0.5s ease;"></div>
+                </div>`;
+                
+                timelineItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="opacity: 0.5; font-size: 0.9em;">#${index + 1}</span>
+                        <div class="timeline-date">${dateStr}</div>
+                    </div>
+                    ${timeWindowStr}
+                    <div class="timeline-methods">${methodBadges}</div>
+                    <div class="power-indicator">
+                        <span class="power-star">${stars}</span>
+                        <span>(${item.totalPower}) +${daysFromReference} ${excludeWeekends ? 'ימי מסחר' : 'ימים'}</span>
+                    </div>
+                    ${powerBar}
+                `;
+                
+                timelineItems.appendChild(timelineItem);
+            });
+        }
+        
+        function filterTimelineByPower(minPower) {
+            if (!window.currentTimelineDates) return;
+            
+            const baseDate = new Date(document.getElementById('mainDate').value);
+            const filtered = minPower === 0 ? 
+                window.currentTimelineDates : 
+                window.currentTimelineDates.filter(d => d.totalPower >= minPower);
+            
+            let sorted = [...filtered];
+            if (currentSort === 'date') {
+                sorted.sort((a, b) => a.date - b.date);
+            } else {
+                sorted.sort((a, b) => {
+                    if (b.totalPower !== a.totalPower) return b.totalPower - a.totalPower;
+                    return a.date - b.date;
+                });
+            }
+            
+            displayTimeline(sorted, baseDate);
+        }
+        
+        function sortTimeline(sortBy) {
+            if (!window.currentTimelineDates) return;
+            
+            currentSort = sortBy;
+            const baseDate = new Date(document.getElementById('mainDate').value);
+            let sorted = [...window.currentTimelineDates];
+            
+            if (sortBy === 'date') {
+                sorted.sort((a, b) => a.date - b.date);
+            } else if (sortBy === 'power') {
+                sorted.sort((a, b) => {
+                    if (b.totalPower !== a.totalPower) return b.totalPower - a.totalPower;
+                    return a.date - b.date;
+                });
+            }
+            
+            const powerBtn = document.getElementById('sortPowerBtn');
+            const dateBtn = document.getElementById('sortDateBtn');
+            
+            if (powerBtn && dateBtn) {
+                if (sortBy === 'power') {
+                    powerBtn.style.background = 'rgba(240, 147, 251, 0.6)';
+                    dateBtn.style.background = 'rgba(78, 205, 196, 0.3)';
+                } else {
+                    powerBtn.style.background = 'rgba(240, 147, 251, 0.3)';
+                    dateBtn.style.background = 'rgba(78, 205, 196, 0.6)';
+                }
+            }
+            
+            displayTimeline(sorted, baseDate);
+        }
+
+        function updateAnalysis(dates) {
+            const analysisContent = document.getElementById('analysisContent');
+            
+            const baseDate = new Date(document.getElementById('mainDate').value);
+            baseDate.setHours(0, 0, 0, 0);
+            
+            const futureDates = dates.filter(d => d.date > baseDate);
+            const highPowerDates = futureDates.filter(d => d.totalPower >= 7);
+            const convergenceDates = futureDates.filter(d => d.methods.length >= 4);
+            
+            let html = `
+                <h3>📈 סיכום ניתוח</h3>
+                <p style="opacity: 0.8; margin-bottom: 20px;">תאריך בסיס: ${baseDate.toLocaleDateString('he-IL')}</p>
+                <div class="statistics-panel">
+                    <div class="stat-card">
+                        <div class="stat-number">${futureDates.length}</div>
+                        <div class="stat-label">תאריכים עתידיים</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${highPowerDates.length}</div>
+                        <div class="stat-label">תאריכי עוצמה גבוהה</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${convergenceDates.length}</div>
+                        <div class="stat-label">התכנסויות מרובות</div>
+                    </div>
+                </div>
+                
+                <h3>🎯 תאריכים קריטיים ביותר:</h3>
+                <div class="timeline-container">
+            `;
+            
+            highPowerDates.slice(0, 5).forEach(item => {
+                const dateStr = item.date.toLocaleDateString('he-IL', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const daysFromBase = excludeWeekends ?
+                    calculateDaysBetween(baseDate, item.date) :
+                    Math.round((item.date - baseDate) / (1000 * 60 * 60 * 24));
+                
+                html += `
+                    <div class="timeline-item high-power">
+                        <div class="timeline-date">${dateStr}</div>
+                        <div class="timeline-methods">
+                            ${item.methods.map(m => `<span class="method-badge method-${m.method}">${m.details}</span>`).join('')}
+                        </div>
+                        <div class="power-indicator">
+                            <span class="power-star">${'⭐'.repeat(5)}</span>
+                            <span>(${item.totalPower}) +${daysFromBase} ימים</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                </div>
+                
+                <div class="info-box">
+                    <h4>💡 המלצות לבדיקה במערכת המסחר:</h4>
+                    <p>• בדוק את התאריכים המסומנים על הגרף ההיסטורי</p>
+                    <p>• שים לב במיוחד לתאריכים עם עוצמה גבוהה (7+)</p>
+                    <p>• תאריכים עם התכנסות של 4+ שיטות הם הסבירים ביותר למפנה</p>
+                    <p>• חפש דפוסי היפוך או המשך בתאריכים אלו</p>
+                    <p>• זכור: חלון של ±3 ימים מהתאריך המחושב</p>
+                </div>
+            `;
+            
+            analysisContent.innerHTML = html;
+        }
+
+        function calculateGannDates() {
+            const price = parseFloat(document.getElementById('gannPrice').value);
+            const startDate = new Date();
+            
+            if (!price) {
+                showNotification('נא להזין מחיר', 'error');
+                return;
+            }
+            
+            const results = calculateGannMethod(price, startDate, 365);
+            
+            const resultsHtml = results.slice(0, 10).map(r => {
+                const dateStr = r.date.toLocaleDateString('he-IL');
+                return `<div style="padding: 10px; background: rgba(255,255,255,0.1); margin: 5px; border-radius: 5px;">
+                    ${dateStr} - ${r.details}
+                </div>`;
+            }).join('');
+            
+            const gannPanel = document.querySelector('#gann .panel');
+            let resultsDiv = document.getElementById('gannResults');
+            if (!resultsDiv) {
+                resultsDiv = document.createElement('div');
+                resultsDiv.id = 'gannResults';
+                resultsDiv.style.marginTop = '20px';
+                gannPanel.appendChild(resultsDiv);
+            }
+            resultsDiv.innerHTML = '<h3>תאריכים מחושבים:</h3>' + resultsHtml;
+        }
+        
+        function calculateFibonacciDates() {
+            const startDate = new Date(document.getElementById('fiboStartDate').value);
+            if (!startDate) {
+                showNotification('נא להזין תאריך התחלה', 'error');
+                return;
+            }
+            
+            const results = calculateFiboMethod(startDate, 365);
+            displayTimeline(results.map(r => ({
+                ...r,
+                methods: [{method: r.method, details: r.details}],
+                totalPower: r.power
+            })));
+        }
+        
+        function calculateAstroDates() {
+            const startDate = new Date();
+            const results = calculateAstroMethod(startDate, 365);
+            
+            const timeline = document.getElementById('astroTimeline');
+            timeline.innerHTML = results.slice(0, 10).map(r => {
+                const dateStr = r.date.toLocaleDateString('he-IL');
+                return `<div class="timeline-item low-power">
+                    <div class="timeline-date">${dateStr}</div>
+                    <div class="timeline-methods">
+                        <span class="method-badge method-astro">${r.details}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        function calculateNaturalCycles() {
+            const startDate = new Date();
+            const results = calculateNaturalMethod(startDate, 365);
+            
+            const timeline = document.getElementById('cyclesTimeline');
+            timeline.innerHTML = results.slice(0, 10).map(r => {
+                const dateStr = r.date.toLocaleDateString('he-IL');
+                return `<div class="timeline-item low-power">
+                    <div class="timeline-date">${dateStr}</div>
+                    <div class="timeline-methods">
+                        <span class="method-badge method-natural">${r.details}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        function fillExampleData() {
+            const isForex = confirm('האם מדובר במט"ח? (לחץ OK למט"ח, Cancel למניות/מדדים)');
+            
+            if (isForex) {
+                document.getElementById('mainPrice').value = '1.0735';
+                document.getElementById('assetType').value = 'forex';
+                document.getElementById('excludeWeekends').checked = false;
+                excludeWeekends = false;
+            } else {
+                document.getElementById('mainPrice').value = '1850.50';
+                document.getElementById('assetType').value = 'commodities';
+                document.getElementById('excludeWeekends').checked = true;
+                excludeWeekends = true;
+            }
+            
+            const pastDate = new Date('2021-05-25');
+            document.getElementById('mainDate').valueAsDate = pastDate;
+            document.getElementById('timeRange').value = '180';
+            
+            const allMethods = ['useGann', 'useFibo', 'useAstro', 'useLunar', 'useNatural', 'useGematria'];
+            allMethods.forEach(method => {
+                document.getElementById(method).checked = true;
+            });
+            
+            updateAssetSettings();
+            
+            showNotification(`נתוני דוגמה הוזנו עם תאריך מהעבר (25/05/2021)!
+            סוג נכס: ${isForex ? 'מט"ח' : 'סחורות'}
+            סופי שבוע: ${excludeWeekends ? 'לא נספרים' : 'נספרים'}
+            לחץ על "חשב תאריכי מפנה" כדי לראות תוצאות`, 'success');
+        }
+        
+        function createStrengthChart(dates) {
+            const chartContainer = document.getElementById('strengthChart');
+            chartContainer.style.display = 'block';
+            
+            let canvas = document.getElementById('dateStrengthChart');
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                canvas.id = 'dateStrengthChart';
+                canvas.style.maxHeight = '200px';
+                chartContainer.appendChild(canvas);
+            }
+            
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = chartContainer.offsetWidth - 40;
+            canvas.height = 180;
+            
+            const padding = 20;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.fillRect(padding, padding, chartWidth, chartHeight);
+            
+            if (dates.length === 0) return;
+            
+            const maxPower = Math.max(...dates.map(d => d.totalPower));
+            const barWidth = Math.max(20, chartWidth / dates.length - 5);
+            
+            dates.forEach((date, index) => {
+                const x = padding + (index * (chartWidth / dates.length)) + 2;
+                const barHeight = (date.totalPower / maxPower) * (chartHeight - 20);
+                const y = canvas.height - padding - barHeight;
+                
+                const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
+                if (date.totalPower >= 7) {
+                    gradient.addColorStop(0, '#ff6b6b');
+                    gradient.addColorStop(1, '#ee5a6f');
+                } else if (date.totalPower >= 5) {
+                    gradient.addColorStop(0, '#ffd700');
+                    gradient.addColorStop(1, '#f39c12');
+                } else {
+                    gradient.addColorStop(0, '#4ecdc4');
+                    gradient.addColorStop(1, '#45a08d');
+                }
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, y, barWidth - 4, barHeight);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(date.totalPower, x + (barWidth - 4) / 2, y - 5);
+                
+                ctx.save();
+                ctx.translate(x + (barWidth - 4) / 2, canvas.height - 5);
+                ctx.rotate(-Math.PI / 4);
+                ctx.font = '9px Arial';
+                ctx.fillText(date.date.toLocaleDateString('he-IL', {day: 'numeric', month: 'numeric'}), 0, 0);
+                ctx.restore();
+            });
+        }
+        
+        function exportResults() {
+            if (consolidatedResults.length === 0) {
+                showNotification('אין תוצאות לייצוא. חשב תאריכים תחילה.', 'error');
+                return;
+            }
+            
+            const baseDate = new Date(document.getElementById('mainDate').value);
+            const price = document.getElementById('mainPrice').value;
+            const assetType = document.getElementById('assetType').value;
+            const assetName = assetConfigs[assetType].name;
+            const precisionElement = document.getElementById('precision');
+            const precision = precisionElement ? precisionElement.value : 'normal';
+            
+            const BOM = '\uFEFF';
+            let csvContent = BOM + `תאריך,יום בשבוע,${excludeWeekends ? 'ימי מסחר' : 'ימים'} מהבסיס,עוצמה,שיטות,חלון זמן,המלצה\n`;
+            
+            consolidatedResults.forEach(item => {
+                if (item.date > baseDate) {
+                    const dateStr = item.date.toLocaleDateString('he-IL');
+                    const dayName = item.date.toLocaleDateString('he-IL', { weekday: 'long' });
+                    const daysFromBase = excludeWeekends ?
+                        calculateDaysBetween(baseDate, item.date) :
+                        Math.round((item.date - baseDate) / (1000 * 60 * 60 * 24));
+                    const methods = item.methods.map(m => m.details).join(' | ');
+                    
+                    let timeWindow = dateStr;
+                    if (precision === 'high' && item.totalPower >= 5) {
+                        const windowStart = new Date(item.date);
+                        const windowEnd = new Date(item.date);
+                        windowStart.setDate(windowStart.getDate() - 2);
+                        windowEnd.setDate(windowEnd.getDate() + 2);
+                        timeWindow = `${windowStart.toLocaleDateString('he-IL')} - ${windowEnd.toLocaleDateString('he-IL')}`;
+                    }
+                    
+                    let recommendation = '';
+                    if (item.totalPower >= 7) {
+                        recommendation = 'תאריך קריטי! סבירות גבוהה מאוד למפנה. המלצה לעקוב מקרוב';
+                    } else if (item.totalPower >= 5) {
+                        recommendation = 'תאריך חשוב. סבירות בינונית-גבוהה למפנה';
+                    } else {
+                        recommendation = 'תאריך משני. כדאי לשים לב אם מתכנס עם אינדיקטורים אחרים';
+                    }
+                    
+                    csvContent += `${dateStr},${dayName},${daysFromBase},${item.totalPower},"${methods}","${timeWindow}","${recommendation}"\n`;
+                }
+            });
+            
+            const futureDates = consolidatedResults.filter(d => d.date > baseDate);
+            const criticalDates = futureDates.filter(d => d.totalPower >= 7).length;
+            const importantDates = futureDates.filter(d => d.totalPower >= 5).length;
+            
+            csvContent += `\n\nסיכום:\n`;
+            csvContent += `סוג נכס,${assetName}\n`;
+            csvContent += `מחיר בסיס,${price}\n`;
+            csvContent += `תאריך בסיס,${baseDate.toLocaleDateString('he-IL')}\n`;
+            csvContent += `ספירת ימים,${excludeWeekends ? 'ימי מסחר בלבד' : 'כל הימים'}\n`;
+            csvContent += `סה"כ תאריכים,${futureDates.length}\n`;
+            csvContent += `תאריכים קריטיים,${criticalDates}\n`;
+            csvContent += `תאריכים חשובים,${importantDates}\n`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `gann_${assetName}_${price}_${baseDate.toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification(`הקובץ יוצא בהצלחה! 
+            
+📊 סיכום:
+• ${futureDates.length} תאריכים זוהו
+• ${criticalDates} תאריכים קריטיים (7+ כוכבים)
+• ${importantDates} תאריכים חשובים (5+ כוכבים)
+
+💡 המלצות:
+• התמקד בתאריכים עם 7+ כוכבים
+• בדוק התכנסות עם רמות פיבונאצ'י
+• עקוב אחר נפח מסחר בתאריכים אלו`, 'success');
+        }
+        
+        function resetForm() {
+            document.getElementById('mainPrice').value = '';
+            document.getElementById('mainDate').value = '2021-05-25';
+            document.getElementById('timeRange').value = '30';
+            document.getElementById('pivotType').value = 'high';
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+            
+            allCalculatedDates = [];
+            consolidatedResults = [];
+            document.getElementById('mainTimeline').innerHTML = '<p style="text-align: center; opacity: 0.6;">התוצאות יופיעו כאן לאחר החישוב</p>';
+            document.getElementById('calculationInfo').style.display = 'none';
+            updateStatistics([]);
+            
+            showNotification('המערכת אופסה. ניתן להזין נתונים חדשים.', 'info');
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                z-index: 1000;
+                max-width: 400px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            switch(type) {
+                case 'success':
+                    notification.style.background = 'linear-gradient(45deg, #00d2d3, #54a0ff)';
+                    break;
+                case 'error':
+                    notification.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a52)';
+                    break;
+                case 'info':
+                    notification.style.background = 'rgba(78, 205, 196, 0.9)';
+                    break;
+                default:
+                    notification.style.background = 'rgba(240, 147, 251, 0.9)';
+            }
+            
+            notification.innerHTML = message.replace(/\n/g, '<br>');
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+        
+        // Initialize Gann Square on load
+        initializeGannSquare();
+    </script>
 </body>
 </html>
